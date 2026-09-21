@@ -23551,3 +23551,17 @@ static const struct sectioncheck *section_mismatch(
  task03/dummy/src/tracepoint-update.c       |  436 ++--
  46 files changed, 10898 insertions(+), 11788 deletions(-)
 ```
+
+### Результат переходу на Chromium-22:
+```
+ task03/Report.md                 |   3 +
+ task03/dummy/.clang-format       | 116 ++++++++++++++++++++++++++++++++++-----
+ task03/dummy/include/bpf_elf.h   |  14 ++---
+ task03/dummy/include/keyctl.h    |  78 ++++++++++++++------------
+ task03/dummy/include/kfd_ioctl.h |   2 +-
+ task03/dummy/src/file2alias.c    |  10 ++--
+ task03/dummy/src/modpost.c       |   9 +--
+ task03/make_format_17.sh         |  11 +++-
+ task03/make_format_22.sh         |  11 +++-
+ 9 files changed, 181 insertions(+), 73 deletions(-)
+```

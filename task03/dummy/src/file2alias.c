@@ -44,11 +44,11 @@ typedef Elf64_Addr kernel_ulong_t;
  * @append_wildcard: append '*' for future extension if not exist yet
  * @fmt: printf(3)-like format
  */
-static void __attribute__((format(printf, 3, 4)))
-module_alias_printf(struct module* mod,
-                    bool append_wildcard,
-                    const char* fmt,
-                    ...) {
+static void __attribute__((format(printf, 3, 4))) module_alias_printf(
+    struct module* mod,
+    bool append_wildcard,
+    const char* fmt,
+    ...) {
   struct module_alias* new, *als;
   size_t len;
   int n;

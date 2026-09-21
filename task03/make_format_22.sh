@@ -1,14 +1,19 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
+if [[ $# -ne 1 ]]; then
     echo "Використання: $0 <коренева_директорія_проекту>"
     exit 1
 fi
 
 PROJECT_DIR="$1"
 
-if [ ! -d "$PROJECT_DIR" ] \vert{}\vert{} [ ! -f "$PROJECT_DIR/.clang-format" ]; then
-    echo "Помилка: Директорія не існує або відсутній файл .clang-format!"
+if [[ ! -d "$PROJECT_DIR" ]]; then
+    echo "Помилка: Директорія '$PROJECT_DIR' не існує!"
+    exit 1
+fi
+
+if [[ ! -f "$PROJECT_DIR/.clang-format" ]]; then
+    echo "Помилка: Файл .clang-format відсутній у '$PROJECT_DIR'!"
     exit 1
 fi
 
