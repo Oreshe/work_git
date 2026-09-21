@@ -1675,8 +1675,8 @@ static void read_symbols_from_files(const char *filename)
  * following helper, then compare to the file on disk and
  * only update the later if anything changed */
 
-void __attribute__((format(printf, 2, 3)))
-buf_printf(struct buffer *buf, const char *fmt, ...)
+void __attribute__((format(printf, 2, 3))) buf_printf(struct buffer *buf,
+						      const char *fmt, ...)
 {
 	char tmp[SZ];
 	int len;
@@ -2165,10 +2165,10 @@ static void read_dump(const char *fname)
 		*modname++ = '\0';
 		if (!(export = strchr(modname, '\t')))
 			goto fail;
-		*export ++ = '\0';
+		*export++ = '\0';
 		if (!(namespace = strchr(export, '\t')))
 			goto fail;
-		*namespace ++ = '\0';
+		*namespace++ = '\0';
 
 		crc = strtoul(line, &d, 16);
 		if (*symname == '\0' || *modname == '\0' || *d != '\0')

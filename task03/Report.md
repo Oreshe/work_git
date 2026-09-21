@@ -23199,3 +23199,12 @@ static const struct sectioncheck *section_mismatch(
  task03/dummy/src/tracepoint-update.c |   38 +-
  43 files changed, 3095 insertions(+), 3014 deletions(-)
 ```
+
+### Статистика після clang-format-22 (поверх 17):
+```
+ task03/Report.md                 |  3 +++
+ task03/dummy/include/bpf_elf.h   | 15 +++++++--------
+ task03/dummy/include/kfd_ioctl.h |  2 +-
+ task03/dummy/src/modpost.c       |  8 ++++----
+ 4 files changed, 15 insertions(+), 13 deletions(-)
+```
