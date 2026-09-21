@@ -65,8 +65,7 @@ static unsigned int symbol_count(struct elf_info *elf)
  * If we notice any difference, bail out rather than potentially
  * propagating errors or crashing.
  */
-static void symsearch_populate(struct elf_info *elf,
-			       struct syminfo *table,
+static void symsearch_populate(struct elf_info *elf, struct syminfo *table,
 			       unsigned int table_size)
 {
 	bool is_arm = (elf->hdr->e_machine == EM_ARM);
@@ -126,12 +125,12 @@ void symsearch_init(struct elf_info *elf)
 	unsigned int table_size = symbol_count(elf);
 
 	elf->symsearch = xmalloc(sizeof(struct symsearch) +
-				       sizeof(struct syminfo) * table_size);
+				 sizeof(struct syminfo) * table_size);
 	elf->symsearch->table_size = table_size;
 
 	symsearch_populate(elf, elf->symsearch->table, table_size);
-	qsort(elf->symsearch->table, table_size,
-	      sizeof(struct syminfo), syminfo_compare);
+	qsort(elf->symsearch->table, table_size, sizeof(struct syminfo),
+	      syminfo_compare);
 
 	symsearch_fixup(elf->symsearch->table, table_size);
 }
@@ -161,9 +160,9 @@ Elf_Sym *symsearch_find_nearest(struct elf_info *elf, Elf_Addr addr,
 
 	target.addr = addr;
 	target.section_index = secndx;
-	target.symbol_index = ~0;  /* compares greater than any actual index */
+	target.symbol_index = ~0; /* compares greater than any actual index */
 	while (hi > lo) {
-		unsigned int mid = lo + (hi - lo) / 2;  /* Avoids overflow */
+		unsigned int mid = lo + (hi - lo) / 2; /* Avoids overflow */
 
 		if (syminfo_compare(&table[mid], &target) > 0)
 			hi = mid;
@@ -183,15 +182,13 @@ Elf_Sym *symsearch_find_nearest(struct elf_info *elf, Elf_Addr addr,
 	 */
 	Elf_Sym *result = NULL;
 
-	if (allow_negative &&
-	    hi < elf->symsearch->table_size &&
+	if (allow_negative && hi < elf->symsearch->table_size &&
 	    table[hi].section_index == secndx &&
 	    table[hi].addr - addr <= min_distance) {
 		min_distance = table[hi].addr - addr;
 		result = &elf->symtab_start[table[hi].symbol_index];
 	}
-	if (hi > 0 &&
-	    table[hi - 1].section_index == secndx &&
+	if (hi > 0 && table[hi - 1].section_index == secndx &&
 	    addr - table[hi - 1].addr <= min_distance) {
 		result = &elf->symtab_start[table[hi - 1].symbol_index];
 	}

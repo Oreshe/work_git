@@ -71,12 +71,10 @@ static int add_string(const char *str, const char ***vals, int *count)
  * the current string for each iteration and the passed in @len will
  * contain the strlen() of that string.
  */
-#define for_each_shdr_str(len, ehdr, sec)				\
-	for (const char *str = (void *)(ehdr) + shdr_offset(sec),	\
-			*end = str + shdr_size(sec);			\
-	     len = strlen(str), str < end;				\
-	     str += (len) + 1)
-
+#define for_each_shdr_str(len, ehdr, sec)                         \
+	for (const char *str = (void *)(ehdr) + shdr_offset(sec), \
+			*end = str + shdr_size(sec);              \
+	     len = strlen(str), str < end; str += (len) + 1)
 
 static void make_trace_array(struct elf_tracepoint *etrace)
 {
@@ -92,7 +90,8 @@ static void make_trace_array(struct elf_tracepoint *etrace)
 	 * names of tracepoints (in tracepoint_strings). Create an array
 	 * that points to each string and then sort the array.
 	 */
-	for_each_shdr_str(len, ehdr, check_data_sec) {
+	for_each_shdr_str(len, ehdr, check_data_sec)
+	{
 		if (!len)
 			continue;
 		if (add_string(str, &vals, &count) < 0)
@@ -111,7 +110,8 @@ static void make_trace_array(struct elf_tracepoint *etrace)
 
 static int find_event(const char *str, void *array, size_t size)
 {
-	return bsearch(&str, array, size, sizeof(char *), compare_strings) != NULL;
+	return bsearch(&str, array, size, sizeof(char *), compare_strings) !=
+	       NULL;
 }
 
 static void check_tracepoints(struct elf_tracepoint *etrace, const char *fname)
@@ -127,11 +127,13 @@ static void check_tracepoints(struct elf_tracepoint *etrace, const char *fname)
 	 * defined tracepoints. If any of them are not in the
 	 * __tracepoint_check_section it means they are not used.
 	 */
-	for_each_shdr_str(len, ehdr, tracepoint_data_sec) {
+	for_each_shdr_str(len, ehdr, tracepoint_data_sec)
+	{
 		if (!len)
 			continue;
 		if (!find_event(str, etrace->array, etrace->count)) {
-			fprintf(stderr, "warning: tracepoint '%s' is unused", str);
+			fprintf(stderr, "warning: tracepoint '%s' is unused",
+				str);
 			if (fname)
 				fprintf(stderr, " in module %s\n", fname);
 			else
@@ -152,7 +154,7 @@ static void *tracepoint_check(struct elf_tracepoint *etrace, const char *fname)
 
 static int process_tracepoints(bool mod, void *addr, const char *fname)
 {
-	struct elf_tracepoint etrace = {0};
+	struct elf_tracepoint etrace = { 0 };
 	Elf_Ehdr *ehdr = addr;
 	Elf_Shdr *shdr_start;
 	Elf_Shdr *string_sec;
@@ -203,11 +205,13 @@ static int process_tracepoints(bool mod, void *addr, const char *fname)
 
 	if (!check_data_sec) {
 		if (mod) {
-			fprintf(stderr, "warning: Module %s has only unused tracepoints\n", fname);
+			fprintf(stderr,
+				"warning: Module %s has only unused tracepoints\n",
+				fname);
 			/* Do not fail build */
 			return 0;
 		}
-		fprintf(stderr,	"no __tracepoint_check in file: %s\n", fname);
+		fprintf(stderr, "no __tracepoint_check in file: %s\n", fname);
 		return -1;
 	}
 
@@ -215,7 +219,7 @@ static int process_tracepoints(bool mod, void *addr, const char *fname)
 		/* A module may reference only exported tracepoints */
 		if (mod)
 			return 0;
-		fprintf(stderr,	"no __tracepoint_strings in file: %s\n", fname);
+		fprintf(stderr, "no __tracepoint_strings in file: %s\n", fname);
 		return -1;
 	}
 
@@ -242,9 +246,11 @@ int main(int argc, char *argv[])
 
 	if (argc < 2) {
 		if (mod)
-			fprintf(stderr, "usage: tracepoint-update --module module...\n");
+			fprintf(stderr,
+				"usage: tracepoint-update --module module...\n");
 		else
-			fprintf(stderr, "usage: tracepoint-update vmlinux...\n");
+			fprintf(stderr,
+				"usage: tracepoint-update vmlinux...\n");
 		return 0;
 	}
 

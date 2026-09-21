@@ -29,33 +29,32 @@
 #include <openssl/pem.h>
 #include <openssl/err.h>
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
-# define USE_PKCS11_PROVIDER
-# include <openssl/provider.h>
-# include <openssl/store.h>
+#define USE_PKCS11_PROVIDER
+#include <openssl/provider.h>
+#include <openssl/store.h>
 #else
-# if !defined(OPENSSL_NO_ENGINE) && !defined(OPENSSL_NO_DEPRECATED_3_0)
-#  define USE_PKCS11_ENGINE
-#  include <openssl/engine.h>
-# endif
+#if !defined(OPENSSL_NO_ENGINE) && !defined(OPENSSL_NO_DEPRECATED_3_0)
+#define USE_PKCS11_ENGINE
+#include <openssl/engine.h>
+#endif
 #endif
 #include "ssl-common.h"
 
 struct module_signature {
-	uint8_t		algo;		/* Public-key crypto algorithm [0] */
-	uint8_t		hash;		/* Digest algorithm [0] */
-	uint8_t		id_type;	/* Key identifier type [PKEY_ID_PKCS7] */
-	uint8_t		signer_len;	/* Length of signer's name [0] */
-	uint8_t		key_id_len;	/* Length of key identifier [0] */
-	uint8_t		__pad[3];
-	uint32_t	sig_len;	/* Length of signature data */
+	uint8_t algo; /* Public-key crypto algorithm [0] */
+	uint8_t hash; /* Digest algorithm [0] */
+	uint8_t id_type; /* Key identifier type [PKEY_ID_PKCS7] */
+	uint8_t signer_len; /* Length of signer's name [0] */
+	uint8_t key_id_len; /* Length of key identifier [0] */
+	uint8_t __pad[3];
+	uint32_t sig_len; /* Length of signature data */
 };
 
 #define PKEY_ID_PKCS7 2
 
 static char magic_number[] = "~Module signature appended~\n";
 
-static __attribute__((noreturn))
-void format(void)
+static __attribute__((noreturn)) void format(void)
 {
 	fprintf(stderr,
 		"Usage: scripts/sign-file [-dp] <hash algo> <key> <x509> <module> [<dest>]\n");
@@ -127,7 +126,8 @@ static EVP_PKEY *read_private_key_pkcs11(const char *private_key_name)
 	else
 		ERR(1, "ENGINE_init");
 	if (key_pass)
-		ERR(!ENGINE_ctrl_cmd_string(e, "PIN", key_pass, 0), "Set PKCS#11 PIN");
+		ERR(!ENGINE_ctrl_cmd_string(e, "PIN", key_pass, 0),
+		    "Set PKCS#11 PIN");
 	private_key = ENGINE_load_private_key(e, private_key_name, NULL, NULL);
 	ERR(!private_key, "%s", private_key_name);
 #else
@@ -147,8 +147,7 @@ static EVP_PKEY *read_private_key(const char *private_key_name)
 
 		b = BIO_new_file(private_key_name, "rb");
 		ERR(!b, "%s", private_key_name);
-		private_key = PEM_read_bio_PrivateKey(b, NULL, pem_pw_cb,
-						      NULL);
+		private_key = PEM_read_bio_PrivateKey(b, NULL, pem_pw_cb, NULL);
 		ERR(!private_key, "%s", private_key_name);
 		BIO_free(b);
 
@@ -222,12 +221,23 @@ int main(int argc, char **argv)
 	do {
 		opt = getopt(argc, argv, "sdpk");
 		switch (opt) {
-		case 's': raw_sig = true; break;
-		case 'p': save_sig = true; break;
-		case 'd': sign_only = true; save_sig = true; break;
-		case 'k': use_keyid = CMS_USE_KEYID; break;
-		case -1: break;
-		default: format();
+		case 's':
+			raw_sig = true;
+			break;
+		case 'p':
+			save_sig = true;
+			break;
+		case 'd':
+			sign_only = true;
+			save_sig = true;
+			break;
+		case 'k':
+			use_keyid = CMS_USE_KEYID;
+			break;
+		case -1:
+			break;
+		default:
+			format();
 		}
 	} while (opt != -1);
 
@@ -271,24 +281,20 @@ int main(int argc, char **argv)
 		digest_algo = EVP_get_digestbyname(hash_algo);
 		ERR(!digest_algo, "EVP_get_digestbyname");
 
-		unsigned int flags =
-			CMS_NOCERTS |
-			CMS_NOATTR |
-			CMS_PARTIAL |
-			CMS_BINARY |
-			CMS_DETACHED |
-			CMS_STREAM  |
-			CMS_NOSMIMECAP |
+		unsigned int flags = CMS_NOCERTS | CMS_NOATTR | CMS_PARTIAL |
+				     CMS_BINARY | CMS_DETACHED | CMS_STREAM |
+				     CMS_NOSMIMECAP |
 #ifdef CMS_NO_SIGNING_TIME
-			CMS_NO_SIGNING_TIME |
+				     CMS_NO_SIGNING_TIME |
 #endif
-			use_keyid;
+				     use_keyid;
 
-#if OPENSSL_VERSION_NUMBER >= 0x30000000L && OPENSSL_VERSION_NUMBER < 0x40000000L
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L && \
+	OPENSSL_VERSION_NUMBER < 0x40000000L
 		if (EVP_PKEY_is_a(private_key, "ML-DSA-44") ||
 		    EVP_PKEY_is_a(private_key, "ML-DSA-65") ||
 		    EVP_PKEY_is_a(private_key, "ML-DSA-87")) {
-			 /* ML-DSA + CMS_NOATTR is not supported in openssl-3.5
+			/* ML-DSA + CMS_NOATTR is not supported in openssl-3.5
 			  * and before.
 			  */
 			flags &= ~CMS_NOATTR;
@@ -299,10 +305,10 @@ int main(int argc, char **argv)
 		cms = CMS_sign(NULL, NULL, NULL, NULL, flags);
 		ERR(!cms, "CMS_sign");
 
-		ERR(!CMS_add1_signer(cms, x509, private_key, digest_algo, flags),
+		ERR(!CMS_add1_signer(cms, x509, private_key, digest_algo,
+				     flags),
 		    "CMS_add1_signer");
-		ERR(CMS_final(cms, bm, NULL, flags) != 1,
-		    "CMS_final");
+		ERR(CMS_final(cms, bm, NULL, flags) != 1, "CMS_final");
 
 		if (save_sig) {
 			char *sig_file_name;
@@ -312,8 +318,8 @@ int main(int argc, char **argv)
 			    "asprintf");
 			b = BIO_new_file(sig_file_name, "wb");
 			ERR(!b, "%s", sig_file_name);
-			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) != 1,
-			    "%s", sig_file_name);
+			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) != 1, "%s",
+			    sig_file_name);
 			BIO_free(b);
 		}
 
@@ -331,8 +337,7 @@ int main(int argc, char **argv)
 
 	/* Append the marker and the PKCS#7 message to the destination file */
 	ERR(BIO_reset(bm) < 0, "%s", module_name);
-	while ((n = BIO_read(bm, buf, sizeof(buf))),
-	       n > 0) {
+	while ((n = BIO_read(bm, buf, sizeof(buf))), n > 0) {
 		ERR(BIO_write(bd, buf, n) < 0, "%s", dest_name);
 	}
 	BIO_free(bm);
@@ -357,7 +362,8 @@ int main(int argc, char **argv)
 	sig_size = BIO_number_written(bd) - module_size;
 	sig_info.sig_len = htonl(sig_size);
 	ERR(BIO_write(bd, &sig_info, sizeof(sig_info)) < 0, "%s", dest_name);
-	ERR(BIO_write(bd, magic_number, sizeof(magic_number) - 1) < 0, "%s", dest_name);
+	ERR(BIO_write(bd, magic_number, sizeof(magic_number) - 1) < 0, "%s",
+	    dest_name);
 
 	ERR(BIO_free(bd) != 1, "%s", dest_name);
 

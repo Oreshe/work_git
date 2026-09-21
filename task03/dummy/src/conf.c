@@ -130,7 +130,8 @@ static void randomize_choice_values(struct menu *choice)
 	 * is true, it was specified by KCONFIG_ALLCONFIG. It needs to be
 	 * respected.
 	 */
-	menu_for_each_sub_entry(menu, choice) {
+	menu_for_each_sub_entry(menu, choice)
+	{
 		struct symbol *sym = menu->sym;
 
 		if (sym && !sym_has_value(sym))
@@ -140,7 +141,8 @@ static void randomize_choice_values(struct menu *choice)
 	while (cnt > 0) {
 		x = rand() % cnt;
 
-		menu_for_each_sub_entry(menu, choice) {
+		menu_for_each_sub_entry(menu, choice)
+		{
 			struct symbol *sym = menu->sym;
 
 			if (sym && !sym_has_value(sym))
@@ -164,13 +166,7 @@ static void randomize_choice_values(struct menu *choice)
 	}
 }
 
-enum conf_def_mode {
-	def_default,
-	def_yes,
-	def_mod,
-	def_no,
-	def_random
-};
+enum conf_def_mode { def_default, def_yes, def_mod, def_no, def_random };
 
 static void conf_set_all_new_symbols(enum conf_def_mode mode)
 {
@@ -229,7 +225,8 @@ static void conf_set_all_new_symbols(enum conf_def_mode mode)
 		}
 	}
 
-	menu_for_each_entry(menu) {
+	menu_for_each_entry(menu)
+	{
 		struct symbol *sym = menu->sym;
 		tristate val;
 
@@ -280,7 +277,8 @@ static void conf_rewrite_tristates(tristate old_val, tristate new_val)
 {
 	struct symbol *sym;
 
-	for_all_symbols(sym) {
+	for_all_symbols(sym)
+	{
 		if (sym_get_type(sym) == S_TRISTATE &&
 		    sym->def[S_DEF_USER].tri == old_val)
 			sym->def[S_DEF_USER].tri = new_val;
@@ -345,7 +343,7 @@ static int conf_string(struct menu *menu)
 			}
 			/* fall through */
 		default:
-			line[strlen(line)-1] = 0;
+			line[strlen(line) - 1] = 0;
 			def = line;
 		}
 		if (def && sym_set_string_value(sym, def))
@@ -437,7 +435,8 @@ static void conf_choice(struct menu *menu)
 			if (!menu_is_visible(child))
 				continue;
 			if (!child->sym) {
-				printf("%*c %s\n", indent, '*', menu_get_prompt(child));
+				printf("%*c %s\n", indent, '*',
+				       menu_get_prompt(child));
 				continue;
 			}
 			cnt++;
@@ -488,7 +487,7 @@ static void conf_choice(struct menu *menu)
 			break;
 		}
 
-	conf_childs:
+conf_childs:
 		for (child = menu->list; child; child = child->next) {
 			if (!child->sym || !menu_is_visible(child))
 				continue;
@@ -534,12 +533,9 @@ static void conf(struct menu *menu)
 		case P_COMMENT:
 			prompt = menu_get_prompt(menu);
 			if (prompt)
-				printf("%*c\n%*c %s\n%*c\n",
-					indent, '*',
-					indent, '*', prompt,
-					indent, '*');
-		default:
-			;
+				printf("%*c\n%*c %s\n%*c\n", indent, '*',
+				       indent, '*', prompt, indent, '*');
+		default:;
 		}
 	}
 
@@ -605,25 +601,25 @@ static void check_conf(struct menu *menu)
 }
 
 static const struct option long_opts[] = {
-	{"help",          no_argument,       NULL,            'h'},
-	{"silent",        no_argument,       NULL,            's'},
-	{"oldaskconfig",  no_argument,       &input_mode_opt, oldaskconfig},
-	{"oldconfig",     no_argument,       &input_mode_opt, oldconfig},
-	{"syncconfig",    no_argument,       &input_mode_opt, syncconfig},
-	{"defconfig",     required_argument, &input_mode_opt, defconfig},
-	{"savedefconfig", required_argument, &input_mode_opt, savedefconfig},
-	{"allnoconfig",   no_argument,       &input_mode_opt, allnoconfig},
-	{"allyesconfig",  no_argument,       &input_mode_opt, allyesconfig},
-	{"allmodconfig",  no_argument,       &input_mode_opt, allmodconfig},
-	{"alldefconfig",  no_argument,       &input_mode_opt, alldefconfig},
-	{"randconfig",    no_argument,       &input_mode_opt, randconfig},
-	{"listnewconfig", no_argument,       &input_mode_opt, listnewconfig},
-	{"helpnewconfig", no_argument,       &input_mode_opt, helpnewconfig},
-	{"olddefconfig",  no_argument,       &input_mode_opt, olddefconfig},
-	{"yes2modconfig", no_argument,       &input_mode_opt, yes2modconfig},
-	{"mod2yesconfig", no_argument,       &input_mode_opt, mod2yesconfig},
-	{"mod2noconfig",  no_argument,       &input_mode_opt, mod2noconfig},
-	{NULL, 0, NULL, 0}
+	{ "help", no_argument, NULL, 'h' },
+	{ "silent", no_argument, NULL, 's' },
+	{ "oldaskconfig", no_argument, &input_mode_opt, oldaskconfig },
+	{ "oldconfig", no_argument, &input_mode_opt, oldconfig },
+	{ "syncconfig", no_argument, &input_mode_opt, syncconfig },
+	{ "defconfig", required_argument, &input_mode_opt, defconfig },
+	{ "savedefconfig", required_argument, &input_mode_opt, savedefconfig },
+	{ "allnoconfig", no_argument, &input_mode_opt, allnoconfig },
+	{ "allyesconfig", no_argument, &input_mode_opt, allyesconfig },
+	{ "allmodconfig", no_argument, &input_mode_opt, allmodconfig },
+	{ "alldefconfig", no_argument, &input_mode_opt, alldefconfig },
+	{ "randconfig", no_argument, &input_mode_opt, randconfig },
+	{ "listnewconfig", no_argument, &input_mode_opt, listnewconfig },
+	{ "helpnewconfig", no_argument, &input_mode_opt, helpnewconfig },
+	{ "olddefconfig", no_argument, &input_mode_opt, olddefconfig },
+	{ "yes2modconfig", no_argument, &input_mode_opt, yes2modconfig },
+	{ "mod2yesconfig", no_argument, &input_mode_opt, mod2yesconfig },
+	{ "mod2noconfig", no_argument, &input_mode_opt, mod2noconfig },
+	{ NULL, 0, NULL, 0 }
 };
 
 static void conf_usage(const char *progname)
@@ -715,8 +711,8 @@ int main(int ac, char **av)
 		if (conf_read(defconfig_file)) {
 			fprintf(stderr,
 				"***\n"
-				  "*** Can't find default configuration \"%s\"!\n"
-				  "***\n",
+				"*** Can't find default configuration \"%s\"!\n"
+				"***\n",
 				defconfig_file);
 			exit(1);
 		}
@@ -751,12 +747,23 @@ int main(int ac, char **av)
 			break;
 		}
 		switch (input_mode) {
-		case allnoconfig:	name = "allno.config"; break;
-		case allyesconfig:	name = "allyes.config"; break;
-		case allmodconfig:	name = "allmod.config"; break;
-		case alldefconfig:	name = "alldef.config"; break;
-		case randconfig:	name = "allrandom.config"; break;
-		default: break;
+		case allnoconfig:
+			name = "allno.config";
+			break;
+		case allyesconfig:
+			name = "allyes.config";
+			break;
+		case allmodconfig:
+			name = "allmod.config";
+			break;
+		case alldefconfig:
+			name = "alldef.config";
+			break;
+		case randconfig:
+			name = "allrandom.config";
+			break;
+		default:
+			break;
 		}
 		if (conf_read_simple(name, S_DEF_USER) &&
 		    conf_read_simple("all.config", S_DEF_USER)) {
@@ -840,13 +847,15 @@ int main(int ac, char **av)
 
 	if (input_mode == savedefconfig) {
 		if (conf_write_defconfig(defconfig_file)) {
-			fprintf(stderr, "n*** Error while saving defconfig to: %s\n\n",
+			fprintf(stderr,
+				"n*** Error while saving defconfig to: %s\n\n",
 				defconfig_file);
 			return 1;
 		}
 	} else if (input_mode != listnewconfig && input_mode != helpnewconfig) {
 		if (!no_conf_write && conf_write(NULL)) {
-			fprintf(stderr, "\n*** Error during writing of the configuration.\n\n");
+			fprintf(stderr,
+				"\n*** Error during writing of the configuration.\n\n");
 			exit(1);
 		}
 

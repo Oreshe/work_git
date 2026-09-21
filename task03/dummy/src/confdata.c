@@ -151,10 +151,10 @@ static int conf_touch_dep(const char *name)
 }
 
 static void conf_warning(const char *fmt, ...)
-	__attribute__ ((format (printf, 1, 2)));
+	__attribute__((format(printf, 1, 2)));
 
 static void conf_message(const char *fmt, ...)
-	__attribute__ ((format (printf, 1, 2)));
+	__attribute__((format(printf, 1, 2)));
 
 static const char *conf_filename;
 static int conf_lineno, conf_warnings;
@@ -258,8 +258,8 @@ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
 			break;
 		}
 		if (def != S_DEF_AUTO)
-			conf_warning("symbol value '%s' invalid for %s",
-				     p, sym->name);
+			conf_warning("symbol value '%s' invalid for %s", p,
+				     sym->name);
 		return 1;
 	case S_STRING:
 		/* No escaping for S_DEF_AUTO (include/config/auto.conf) */
@@ -291,8 +291,7 @@ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
 			return 1;
 		}
 		break;
-	default:
-		;
+	default:;
 	}
 	return 0;
 }
@@ -320,8 +319,8 @@ static ssize_t getline_stripped(char **lineptr, size_t *n, FILE *stream)
 int conf_read_simple(const char *name, int def)
 {
 	FILE *in = NULL;
-	char   *line = NULL;
-	size_t  line_asize = 0;
+	char *line = NULL;
+	size_t line_asize = 0;
 	char *p, *val;
 	struct symbol *sym;
 	int def_flags;
@@ -384,7 +383,8 @@ load:
 	conf_warnings = 0;
 
 	def_flags = SYMBOL_DEF << def;
-	for_all_symbols(sym) {
+	for_all_symbols(sym)
+	{
 		sym->flags &= ~def_flags;
 		switch (sym->type) {
 		case S_INT:
@@ -399,8 +399,7 @@ load:
 	}
 
 	if (def == S_DEF_USER) {
-		for_all_symbols(sym)
-			sym->flags &= ~SYMBOL_VALID;
+		for_all_symbols(sym) sym->flags &= ~SYMBOL_VALID;
 		expr_invalidate_all();
 	}
 
@@ -455,7 +454,8 @@ load:
 				conf_touch_dep(sym_name);
 			} else {
 				if (warn_unknown)
-					conf_warning("unknown symbol: %s", sym_name);
+					conf_warning("unknown symbol: %s",
+						     sym_name);
 
 				conf_set_changed(true);
 			}
@@ -463,7 +463,8 @@ load:
 		}
 
 		if (sym->flags & def_flags)
-			conf_warning("override: reassigning to symbol %s", sym->name);
+			conf_warning("override: reassigning to symbol %s",
+				     sym->name);
 
 		if (conf_set_sym_val(sym, def, def_flags, val))
 			continue;
@@ -499,7 +500,8 @@ int conf_read(const char *name)
 
 	sym_calc_value(modules_sym);
 
-	for_all_symbols(sym) {
+	for_all_symbols(sym)
+	{
 		sym_calc_value(sym);
 		if (sym_is_choice(sym))
 			continue;
@@ -508,11 +510,13 @@ int conf_read(const char *name)
 			switch (sym->type) {
 			case S_BOOLEAN:
 			case S_TRISTATE:
-				if (sym->def[S_DEF_USER].tri == sym_get_tristate_value(sym))
+				if (sym->def[S_DEF_USER].tri ==
+				    sym_get_tristate_value(sym))
 					continue;
 				break;
 			default:
-				if (!strcmp(sym->curr.val, sym->def[S_DEF_USER].val))
+				if (!strcmp(sym->curr.val,
+					    sym->def[S_DEF_USER].val))
 					continue;
 				break;
 			}
@@ -737,7 +741,8 @@ static void print_symbol_for_rustccfg(FILE *fp, struct symbol *sym)
 	if (strlen(val_prefix) > 0) {
 		val_prefixed_len = strlen(val) + strlen(val_prefix) + 1;
 		val_prefixed = xmalloc(val_prefixed_len);
-		snprintf(val_prefixed, val_prefixed_len, "%s%s", val_prefix, val);
+		snprintf(val_prefixed, val_prefixed_len, "%s%s", val_prefix,
+			 val);
 		val = val_prefixed;
 	}
 
@@ -767,7 +772,8 @@ int conf_write_defconfig(const char *filename)
 
 	sym_clear_all_valid();
 
-	menu_for_each_entry(menu) {
+	menu_for_each_entry(menu)
+	{
 		struct menu *choice;
 
 		sym = menu->sym;
@@ -783,7 +789,8 @@ int conf_write_defconfig(const char *filename)
 		if (!sym_is_changeable(sym))
 			continue;
 		/* Skip symbols that are equal to the default */
-		if (!strcmp(sym_get_string_value(sym), sym_get_string_default(sym)))
+		if (!strcmp(sym_get_string_value(sym),
+			    sym_get_string_default(sym)))
 			continue;
 
 		/* Skip choice values that are equal to the default */
@@ -832,8 +839,8 @@ int conf_write(const char *name)
 		*tmpname = 0;
 		out = fopen(name, "w");
 	} else {
-		snprintf(tmpname, sizeof(tmpname), "%s.%d.tmp",
-			 name, (int)getpid());
+		snprintf(tmpname, sizeof(tmpname), "%s.%d.tmp", name,
+			 (int)getpid());
 		out = fopen(tmpname, "w");
 	}
 	if (!out)
@@ -851,10 +858,12 @@ int conf_write(const char *name)
 			if (!menu_is_visible(menu))
 				goto next;
 			str = menu_get_prompt(menu);
-			fprintf(out, "\n"
-				     "#\n"
-				     "# %s\n"
-				     "#\n", str);
+			fprintf(out,
+				"\n"
+				"#\n"
+				"# %s\n"
+				"#\n",
+				str);
 			need_newline = false;
 		} else if (!sym_is_choice(sym) &&
 			   !(sym->flags & SYMBOL_WRITTEN)) {
@@ -892,8 +901,7 @@ end_check:
 	}
 	fclose(out);
 
-	for_all_symbols(sym)
-		sym->flags &= ~SYMBOL_WRITTEN;
+	for_all_symbols(sym) sym->flags &= ~SYMBOL_WRITTEN;
 
 	if (*tmpname) {
 		if (is_same(name, tmpname)) {
@@ -975,7 +983,8 @@ static int conf_touch_deps(void)
 
 	conf_read_simple(name, S_DEF_AUTO);
 
-	for_all_symbols(sym) {
+	for_all_symbols(sym)
+	{
 		if (sym_is_choice(sym))
 			continue;
 		if (sym->flags & SYMBOL_WRITE) {
@@ -1057,9 +1066,8 @@ static int __conf_write_autoconf(const char *filename,
 
 	conf_write_heading(file, comment_style);
 
-	for_all_symbols(sym)
-		if ((sym->flags & SYMBOL_WRITE) && sym->name)
-			print_symbol(file, sym);
+	for_all_symbols(sym) if ((sym->flags & SYMBOL_WRITE) && sym->name)
+		print_symbol(file, sym);
 
 	fflush(file);
 	/* check possible errors in conf_write_heading() and print_symbol() */
@@ -1089,21 +1097,18 @@ int conf_write_autoconf(int overwrite)
 	if (ret)
 		return -1;
 
-	for_all_symbols(sym)
-		sym_calc_value(sym);
+	for_all_symbols(sym) sym_calc_value(sym);
 
 	if (conf_touch_deps())
 		return 1;
 
 	ret = __conf_write_autoconf(conf_get_autoheader_name(),
-				    print_symbol_for_c,
-				    &comment_style_c);
+				    print_symbol_for_c, &comment_style_c);
 	if (ret)
 		return ret;
 
 	ret = __conf_write_autoconf(conf_get_rustccfg_name(),
-				    print_symbol_for_rustccfg,
-				    NULL);
+				    print_symbol_for_rustccfg, NULL);
 	if (ret)
 		return ret;
 

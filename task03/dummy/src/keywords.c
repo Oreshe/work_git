@@ -70,7 +70,7 @@ static struct resword {
 	{ "volatile", VOLATILE_KEYW },
 };
 
-#define NR_KEYWORDS (sizeof(keywords)/sizeof(struct resword))
+#define NR_KEYWORDS (sizeof(keywords) / sizeof(struct resword))
 
 static int is_reserved_word(register const char *str, register unsigned int len)
 {

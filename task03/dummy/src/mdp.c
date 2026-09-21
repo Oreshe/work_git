@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
 
 	if (argc < 3)
 		usage(argv[0]);
-	arg = argv+1;
-	if (argc==4 && strcmp(argv[1], "-m") == 0) {
+	arg = argv + 1;
+	if (argc == 4 && strcmp(argv[1], "-m") == 0) {
 		mls = 1;
 		arg++;
 	}
@@ -64,7 +64,8 @@ int main(int argc, char *argv[])
 		fprintf(fout, "class %s\n", secclass_map[i].name);
 	fprintf(fout, "\n");
 
-	initial_sid_to_string_len = sizeof(initial_sid_to_string) / sizeof (char *);
+	initial_sid_to_string_len =
+		sizeof(initial_sid_to_string) / sizeof(char *);
 	/* print out the sids */
 	for (i = 1; i < initial_sid_to_string_len; i++) {
 		const char *name = initial_sid_to_string[i];
@@ -99,7 +100,8 @@ int main(int argc, char *argv[])
 #define SYSTEMLOW "s0"
 #define SYSTEMHIGH "s1:c0.c1"
 		for (i = 0; secclass_map[i].name; i++) {
-			const struct security_class_mapping *map = &secclass_map[i];
+			const struct security_class_mapping *map =
+				&secclass_map[i];
 
 			fprintf(fout, "mlsconstrain %s {\n", map->name);
 			for (j = 0; map->perms[j]; j++)
@@ -127,8 +129,8 @@ int main(int argc, char *argv[])
 			secclass_map[i].name);
 	fprintf(fout, "user user_u roles { base_r }");
 	if (mls)
-		fprintf(fout, " level %s range %s - %s", SYSTEMLOW,
-			SYSTEMLOW, SYSTEMHIGH);
+		fprintf(fout, " level %s range %s - %s", SYSTEMLOW, SYSTEMLOW,
+			SYSTEMHIGH);
 	fprintf(fout, ";\n");
 
 #define SUBJUSERROLETYPE "user_u:base_r:base_t"
@@ -147,9 +149,9 @@ int main(int argc, char *argv[])
 	}
 	fprintf(fout, "\n");
 
-#define FS_USE(behavior, fstype)			    \
-	fprintf(fout, "fs_use_%s %s " OBJUSERROLETYPE "%s;\n", \
-		behavior, fstype, mls ? ":" SYSTEMLOW : "")
+#define FS_USE(behavior, fstype)                                         \
+	fprintf(fout, "fs_use_%s %s " OBJUSERROLETYPE "%s;\n", behavior, \
+		fstype, mls ? ":" SYSTEMLOW : "")
 
 	/*
 	 * Filesystems whose inode labels can be fetched via getxattr.
@@ -218,9 +220,9 @@ int main(int argc, char *argv[])
 	FS_USE("trans", "mqueue");
 #endif
 
-#define GENFSCON(fstype, prefix)			     \
-	fprintf(fout, "genfscon %s %s " OBJUSERROLETYPE "%s\n", \
-		fstype, prefix, mls ? ":" SYSTEMLOW : "")
+#define GENFSCON(fstype, prefix)                                        \
+	fprintf(fout, "genfscon %s %s " OBJUSERROLETYPE "%s\n", fstype, \
+		prefix, mls ? ":" SYSTEMLOW : "")
 
 	/*
 	 * Filesystems whose inodes are labeled from path prefix match
@@ -255,7 +257,8 @@ int main(int argc, char *argv[])
 
 	fout = fopen(ctxout, "w");
 	if (!fout) {
-		printf("Wrote policy, but cannot open %s for writing\n", ctxout);
+		printf("Wrote policy, but cannot open %s for writing\n",
+		       ctxout);
 		usage(argv[0]);
 	}
 	fprintf(fout, "/ " OBJUSERROLETYPE "%s\n", mls ? ":" SYSTEMLOW : "");

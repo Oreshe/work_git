@@ -35,31 +35,31 @@
 #include "elf-parse.h"
 
 #ifndef EM_ARCOMPACT
-#define EM_ARCOMPACT	93
+#define EM_ARCOMPACT 93
 #endif
 
 #ifndef EM_XTENSA
-#define EM_XTENSA	94
+#define EM_XTENSA 94
 #endif
 
 #ifndef EM_AARCH64
-#define EM_AARCH64	183
+#define EM_AARCH64 183
 #endif
 
 #ifndef EM_MICROBLAZE
-#define EM_MICROBLAZE	189
+#define EM_MICROBLAZE 189
 #endif
 
 #ifndef EM_ARCV2
-#define EM_ARCV2	195
+#define EM_ARCV2 195
 #endif
 
 #ifndef EM_RISCV
-#define EM_RISCV	243
+#define EM_RISCV 243
 #endif
 
 #ifndef EM_LOONGARCH
-#define EM_LOONGARCH	258
+#define EM_LOONGARCH 258
 #endif
 
 typedef void (*table_sort_t)(char *, int);
@@ -118,7 +118,7 @@ static inline void *get_index(void *start, int entsize, int index)
 static int extable_ent_size;
 static int long_size;
 
-#define ERRSTR_MAXSZ	256
+#define ERRSTR_MAXSZ 256
 
 #ifdef UNWINDER_ORC_ENABLED
 /* ORC unwinder only support X86_64 */
@@ -156,7 +156,8 @@ static int orc_sort_cmp(const void *_a, const void *_b)
 	 */
 	orc_a = g_orc_table + (a - g_orc_ip_table);
 	orc_b = g_orc_table + (b - g_orc_ip_table);
-	if (orc_a->type == ORC_TYPE_UNDEFINED && orc_b->type == ORC_TYPE_UNDEFINED)
+	if (orc_a->type == ORC_TYPE_UNDEFINED &&
+	    orc_b->type == ORC_TYPE_UNDEFINED)
 		return 0;
 	return orc_a->type == ORC_TYPE_UNDEFINED ? -1 : 1;
 }
@@ -248,8 +249,8 @@ static void rela_write_addend(Elf_Rela *rela, uint64_t val)
 }
 
 struct func_info {
-	uint64_t	addr;
-	uint64_t	size;
+	uint64_t addr;
+	uint64_t size;
 };
 
 /* List of functions created by: nm -S vmlinux */
@@ -257,8 +258,8 @@ static struct func_info *function_list;
 static int function_list_size;
 
 /* Allocate functions in 1k blocks */
-#define FUNC_BLK_SIZE	1024
-#define FUNC_BLK_MASK	(FUNC_BLK_SIZE - 1)
+#define FUNC_BLK_SIZE 1024
+#define FUNC_BLK_MASK (FUNC_BLK_SIZE - 1)
 
 static int add_field(uint64_t addr, uint64_t size)
 {
@@ -322,7 +323,8 @@ static int parse_symbols(const char *fname)
 		return -1;
 	}
 
-	while (fscanf(fp, "%16s %16s %c %*s\n", addr_str, size_str, &type) == 3) {
+	while (fscanf(fp, "%16s %16s %c %*s\n", addr_str, size_str, &type) ==
+	       3) {
 		uint64_t addr;
 		uint64_t size;
 
@@ -337,7 +339,8 @@ static int parse_symbols(const char *fname)
 	}
 	fclose(fp);
 
-	qsort(function_list, function_list_size, sizeof(struct func_info), cmp_funcs);
+	qsort(function_list, function_list_size, sizeof(struct func_info),
+	      cmp_funcs);
 
 	return 0;
 }
@@ -357,7 +360,8 @@ struct elf_mcount_loc {
 };
 
 /* Fill the array with the content of the relocs */
-static int fill_relocs(void *ptr, uint64_t size, Elf_Ehdr *ehdr, uint64_t start_loc)
+static int fill_relocs(void *ptr, uint64_t size, Elf_Ehdr *ehdr,
+		       uint64_t start_loc)
 {
 	Elf_Shdr *shdr_start;
 	Elf_Rela *rel;
@@ -383,7 +387,8 @@ static int fill_relocs(void *ptr, uint64_t size, Elf_Ehdr *ehdr, uint64_t start_
 		rel = (void *)ehdr + shdr_offset(shdr);
 		end = (void *)rel + shdr_size(shdr);
 
-		for (; (void *)rel < end; rel = (void *)rel + shdr_entsize(shdr)) {
+		for (; (void *)rel < end;
+		     rel = (void *)rel + shdr_entsize(shdr)) {
 			uint64_t offset = rela_offset(rel);
 
 			if (offset >= start_loc && offset < start_loc + size) {
@@ -395,9 +400,11 @@ static int fill_relocs(void *ptr, uint64_t size, Elf_Ehdr *ehdr, uint64_t start_
 
 				/* Make sure this has the correct type */
 				if (rela_info(rel) != rela_type) {
-					snprintf(m_err, ERRSTR_MAXSZ,
+					snprintf(
+						m_err, ERRSTR_MAXSZ,
 						"rela has type %lx but expected %lx\n",
-						(long)rela_info(rel), rela_type);
+						(long)rela_info(rel),
+						rela_type);
 					return -1;
 				}
 
@@ -414,7 +421,8 @@ static int fill_relocs(void *ptr, uint64_t size, Elf_Ehdr *ehdr, uint64_t start_
 }
 
 /* Put the sorted vals back into the relocation elements */
-static void replace_relocs(void *ptr, uint64_t size, Elf_Ehdr *ehdr, uint64_t start_loc)
+static void replace_relocs(void *ptr, uint64_t size, Elf_Ehdr *ehdr,
+			   uint64_t start_loc)
 {
 	Elf_Shdr *shdr_start;
 	Elf_Rela *rel;
@@ -438,14 +446,17 @@ static void replace_relocs(void *ptr, uint64_t size, Elf_Ehdr *ehdr, uint64_t st
 		rel = (void *)ehdr + shdr_offset(shdr);
 		end = (void *)rel + shdr_size(shdr);
 
-		for (; (void *)rel < end; rel = (void *)rel + shdr_entsize(shdr)) {
+		for (; (void *)rel < end;
+		     rel = (void *)rel + shdr_entsize(shdr)) {
 			uint64_t offset = rela_offset(rel);
 
 			if (offset >= start_loc && offset < start_loc + size) {
 				if (long_size == 4)
-					rela_write_addend(rel, *(uint32_t *)ptr);
+					rela_write_addend(rel,
+							  *(uint32_t *)ptr);
 				else
-					rela_write_addend(rel, *(uint64_t *)ptr);
+					rela_write_addend(rel,
+							  *(uint64_t *)ptr);
 				ptr += long_size;
 			}
 		}
@@ -482,8 +493,9 @@ static void replace_addrs(void *ptr, uint64_t size, void *addrs)
 static void *sort_mcount_loc(void *arg)
 {
 	struct elf_mcount_loc *emloc = (struct elf_mcount_loc *)arg;
-	uint64_t offset = emloc->start_mcount_loc - shdr_addr(emloc->init_data_sec)
-					+ shdr_offset(emloc->init_data_sec);
+	uint64_t offset = emloc->start_mcount_loc -
+			  shdr_addr(emloc->init_data_sec) +
+			  shdr_offset(emloc->init_data_sec);
 	uint64_t size = emloc->stop_mcount_loc - emloc->start_mcount_loc;
 	unsigned char *start_loc = (void *)emloc->ehdr + offset;
 	Elf_Ehdr *ehdr = emloc->ehdr;
@@ -513,8 +525,9 @@ static void *sort_mcount_loc(void *arg)
 	}
 
 	if (count != size / long_size) {
-		snprintf(m_err, ERRSTR_MAXSZ, "Expected %u mcount elements but found %u\n",
-			(int)(size / long_size), count);
+		snprintf(m_err, ERRSTR_MAXSZ,
+			 "Expected %u mcount elements but found %u\n",
+			 (int)(size / long_size), count);
 		e_msg = m_err;
 		goto out;
 	}
@@ -524,7 +537,8 @@ static void *sort_mcount_loc(void *arg)
 		for (void *ptr = vals; ptr < vals + size; ptr += long_size) {
 			uint64_t key;
 
-			key = long_size == 4 ? *(uint32_t *)ptr : *(uint64_t *)ptr;
+			key = long_size == 4 ? *(uint32_t *)ptr :
+					       *(uint64_t *)ptr;
 			if (!find_func(key)) {
 				if (long_size == 4)
 					*(uint32_t *)ptr = 0;
@@ -565,7 +579,8 @@ static void get_mcount_loc(struct elf_mcount_loc *emloc, Elf_Shdr *symtab_sec,
 			emloc->start_mcount_loc = sym_value(sym);
 			if (++found == 2)
 				break;
-		} else if (!strcmp(strtab + sym_name(sym), "__stop_mcount_loc")) {
+		} else if (!strcmp(strtab + sym_name(sym),
+				   "__stop_mcount_loc")) {
 			emloc->stop_mcount_loc = sym_value(sym);
 			if (++found == 2)
 				break;
@@ -584,11 +599,13 @@ static void get_mcount_loc(struct elf_mcount_loc *emloc, Elf_Shdr *symtab_sec,
 	}
 }
 #else /* MCOUNT_SORT_ENABLED */
-static inline int parse_symbols(const char *fname) { return 0; }
+static inline int parse_symbols(const char *fname)
+{
+	return 0;
+}
 #endif
 
-static int do_sort(Elf_Ehdr *ehdr,
-		   char const *const fname,
+static int do_sort(Elf_Ehdr *ehdr, char const *const fname,
 		   table_sort_t custom_sort)
 {
 	int rc = -1;
@@ -616,7 +633,7 @@ static int do_sort(Elf_Ehdr *ehdr,
 	unsigned int shnum;
 	unsigned int shstrndx;
 #ifdef MCOUNT_SORT_ENABLED
-	struct elf_mcount_loc mstruct = {0};
+	struct elf_mcount_loc mstruct = { 0 };
 #endif
 #ifdef UNWINDER_ORC_ENABLED
 	unsigned int orc_ip_size = 0;
@@ -662,21 +679,21 @@ static int do_sort(Elf_Ehdr *ehdr,
 		/* locate the ORC unwind tables */
 		if (!strcmp(secstrings + idx, ".orc_unwind_ip")) {
 			orc_ip_size = shdr_size(shdr);
-			g_orc_ip_table = (int *)((void *)ehdr +
-						   shdr_offset(shdr));
+			g_orc_ip_table =
+				(int *)((void *)ehdr + shdr_offset(shdr));
 		}
 		if (!strcmp(secstrings + idx, ".orc_unwind")) {
 			orc_size = shdr_size(shdr);
 			g_orc_table = (struct orc_entry *)((void *)ehdr +
-							     shdr_offset(shdr));
+							   shdr_offset(shdr));
 		}
 #endif
 	} /* for loop */
 
 #ifdef UNWINDER_ORC_ENABLED
 	if (!g_orc_ip_table || !g_orc_table) {
-		fprintf(stderr,
-			"incomplete ORC unwind tables in file: %s\n", fname);
+		fprintf(stderr, "incomplete ORC unwind tables in file: %s\n",
+			fname);
 		goto out;
 	}
 
@@ -691,8 +708,8 @@ static int do_sort(Elf_Ehdr *ehdr,
 	}
 
 	/* create thread to sort ORC unwind tables concurrently */
-	if (pthread_create(&orc_sort_thread, NULL,
-			   sort_orctable, &orc_ip_size)) {
+	if (pthread_create(&orc_sort_thread, NULL, sort_orctable,
+			   &orc_ip_size)) {
 		fprintf(stderr,
 			"pthread_create orc_sort_thread failed '%s': %s\n",
 			strerror(errno), fname);
@@ -700,37 +717,39 @@ static int do_sort(Elf_Ehdr *ehdr,
 	}
 #endif
 	if (!extab_sec) {
-		fprintf(stderr,	"no __ex_table in file: %s\n", fname);
+		fprintf(stderr, "no __ex_table in file: %s\n", fname);
 		goto out;
 	}
 
 	if (!symtab_sec) {
-		fprintf(stderr,	"no .symtab in file: %s\n", fname);
+		fprintf(stderr, "no .symtab in file: %s\n", fname);
 		goto out;
 	}
 
 	if (!strtab_sec) {
-		fprintf(stderr,	"no .strtab in file: %s\n", fname);
+		fprintf(stderr, "no .strtab in file: %s\n", fname);
 		goto out;
 	}
 
 	extab_image = (void *)ehdr + shdr_offset(extab_sec);
 	strtab = (const char *)ehdr + shdr_offset(strtab_sec);
-	symtab = (const Elf_Sym *)((const char *)ehdr + shdr_offset(symtab_sec));
+	symtab =
+		(const Elf_Sym *)((const char *)ehdr + shdr_offset(symtab_sec));
 
 #ifdef MCOUNT_SORT_ENABLED
 	mstruct.ehdr = ehdr;
 	get_mcount_loc(&mstruct, symtab_sec, strtab);
 
-	if (!mstruct.init_data_sec || !mstruct.start_mcount_loc || !mstruct.stop_mcount_loc) {
-		fprintf(stderr,
-			"incomplete mcount's sort in file: %s\n",
+	if (!mstruct.init_data_sec || !mstruct.start_mcount_loc ||
+	    !mstruct.stop_mcount_loc) {
+		fprintf(stderr, "incomplete mcount's sort in file: %s\n",
 			fname);
 		goto out;
 	}
 
 	/* create thread to sort mcount_loc concurrently */
-	if (pthread_create(&mcount_sort_thread, NULL, &sort_mcount_loc, &mstruct)) {
+	if (pthread_create(&mcount_sort_thread, NULL, &sort_mcount_loc,
+			   &mstruct)) {
 		fprintf(stderr,
 			"pthread_create mcount_sort_thread failed '%s': %s\n",
 			strerror(errno), fname);
@@ -742,8 +761,8 @@ static int do_sort(Elf_Ehdr *ehdr,
 		custom_sort(extab_image, shdr_size(extab_sec));
 	} else {
 		int num_entries = shdr_size(extab_sec) / extable_ent_size;
-		qsort(extab_image, num_entries,
-		      extable_ent_size, compare_extable);
+		qsort(extab_image, num_entries, extable_ent_size,
+		      compare_extable);
 	}
 
 	/* find the flag main_extable_sort_needed */
@@ -769,13 +788,14 @@ static int do_sort(Elf_Ehdr *ehdr,
 		goto out;
 	}
 
-	sort_need_index = get_secindex(sym_shndx(sym),
-				       ((void *)sort_needed_sym - (void *)symtab) / symentsize,
-				       symtab_shndx);
+	sort_need_index = get_secindex(
+		sym_shndx(sym),
+		((void *)sort_needed_sym - (void *)symtab) / symentsize,
+		symtab_shndx);
 	sort_needed_sec = get_index(shdr_start, shentsize, sort_need_index);
-	sort_needed_loc = (void *)ehdr +
-		shdr_offset(sort_needed_sec) +
-		sym_value(sort_needed_sym) - shdr_addr(sort_needed_sec);
+	sort_needed_loc = (void *)ehdr + shdr_offset(sort_needed_sec) +
+			  sym_value(sort_needed_sym) -
+			  shdr_addr(sort_needed_sec);
 
 	/* extable has been sorted, clear the flag */
 	elf_parser.w(0, sort_needed_loc);
@@ -788,13 +808,11 @@ out:
 		/* wait for ORC tables sort done */
 		rc = pthread_join(orc_sort_thread, &retval);
 		if (rc) {
-			fprintf(stderr,
-				"pthread_join failed '%s': %s\n",
+			fprintf(stderr, "pthread_join failed '%s': %s\n",
 				strerror(errno), fname);
 		} else if (retval) {
 			rc = -1;
-			fprintf(stderr,
-				"failed to sort ORC tables '%s': %s\n",
+			fprintf(stderr, "failed to sort ORC tables '%s': %s\n",
 				(char *)retval, fname);
 		}
 	}
@@ -806,13 +824,11 @@ out:
 		/* wait for mcount sort done */
 		rc = pthread_join(mcount_sort_thread, &retval);
 		if (rc) {
-			fprintf(stderr,
-				"pthread_join failed '%s': %s\n",
+			fprintf(stderr, "pthread_join failed '%s': %s\n",
 				strerror(errno), fname);
 		} else if (retval) {
 			rc = -1;
-			fprintf(stderr,
-				"failed to sort mcount '%s': %s\n",
+			fprintf(stderr, "failed to sort mcount '%s': %s\n",
 				(char *)retval, fname);
 		}
 	}
@@ -926,25 +942,26 @@ static int do_file(char const *const fname, void *addr)
 
 	switch (elf_map_long_size(addr)) {
 	case 4:
-		compare_extable	= compare_extable_32,
-		long_size		= 4;
-		extable_ent_size	= 8;
+		compare_extable = compare_extable_32, long_size = 4;
+		extable_ent_size = 8;
 
 		if (elf_parser.r2(&ehdr->e32.e_ehsize) != sizeof(Elf32_Ehdr) ||
-		    elf_parser.r2(&ehdr->e32.e_shentsize) != sizeof(Elf32_Shdr)) {
+		    elf_parser.r2(&ehdr->e32.e_shentsize) !=
+			    sizeof(Elf32_Shdr)) {
 			fprintf(stderr,
-				"unrecognized ET_EXEC/ET_DYN file: %s\n", fname);
+				"unrecognized ET_EXEC/ET_DYN file: %s\n",
+				fname);
 			return -1;
 		}
 
 		break;
 	case 8:
-		compare_extable	= compare_extable_64,
-		long_size		= 8;
-		extable_ent_size	= 16;
+		compare_extable = compare_extable_64, long_size = 8;
+		extable_ent_size = 16;
 
 		if (elf_parser.r2(&ehdr->e64.e_ehsize) != sizeof(Elf64_Ehdr) ||
-		    elf_parser.r2(&ehdr->e64.e_shentsize) != sizeof(Elf64_Shdr)) {
+		    elf_parser.r2(&ehdr->e64.e_shentsize) !=
+			    sizeof(Elf64_Shdr)) {
 			fprintf(stderr,
 				"unrecognized ET_EXEC/ET_DYN file: %s\n",
 				fname);
@@ -963,7 +980,7 @@ static int do_file(char const *const fname, void *addr)
 
 int main(int argc, char *argv[])
 {
-	int i, n_error = 0;  /* gcc-4.3.0 false positive complaint */
+	int i, n_error = 0; /* gcc-4.3.0 false positive complaint */
 	size_t size = 0;
 	void *addr = NULL;
 	int c;
@@ -977,7 +994,8 @@ int main(int argc, char *argv[])
 			}
 			break;
 		default:
-			fprintf(stderr, "usage: sorttable [-s nm-file] vmlinux...\n");
+			fprintf(stderr,
+				"usage: sorttable [-s nm-file] vmlinux...\n");
 			return 0;
 		}
 	}

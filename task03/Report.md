@@ -23150,3 +23150,52 @@ static const struct sectioncheck *section_mismatch(
         } endian_test = { .c = {0x01, 0x02} };
                                           ^
 ```
+
+## 3. Вплив автоформатування
+### Статистика після clang-format-17:
+```
+ task03/Report.md                     |    4 +
+ task03/dummy/include/ash.h           |   25 +-
+ task03/dummy/include/assert.h        |  229 ++++---
+ task03/dummy/include/bpf_elf.h       |   36 +-
+ task03/dummy/include/capi.h          |   62 +-
+ task03/dummy/include/cld.h           |   60 +-
+ task03/dummy/include/debug.h         |   28 +-
+ task03/dummy/include/ec.h            |   50 +-
+ task03/dummy/include/err.h           |   46 +-
+ task03/dummy/include/export.h        |   65 +-
+ task03/dummy/include/fnmatch.h       |   34 +-
+ task03/dummy/include/ftw.h           |  269 ++++-----
+ task03/dummy/include/if_hippi.h      |  118 ++--
+ task03/dummy/include/ip.h            |  151 +++--
+ task03/dummy/include/kd.h            |  202 +++----
+ task03/dummy/include/keyctl.h        |  163 ++---
+ task03/dummy/include/kfd_ioctl.h     |  763 ++++++++++++------------
+ task03/dummy/include/langinfo.h      | 1088 +++++++++++++++++-----------------
+ task03/dummy/include/mcheck.h        |   28 +-
+ task03/dummy/include/mqueue.h        |   93 ++-
+ task03/dummy/include/netrom.h        |   91 ++-
+ task03/dummy/include/sched.h         |  126 ++--
+ task03/dummy/include/stats.h         |    2 +-
+ task03/dummy/include/stdc-predef.h   |   30 +-
+ task03/dummy/include/sudo_plugin.h   |  321 +++++-----
+ task03/dummy/include/tcp_metrics.h   |   42 +-
+ task03/dummy/include/trace_mmap.h    |   28 +-
+ task03/dummy/include/ulimit.h        |   20 +-
+ task03/dummy/include/v4l2-subdev.h   |   82 +--
+ task03/dummy/src/conf.c              |  107 ++--
+ task03/dummy/src/confdata.c          |   79 +--
+ task03/dummy/src/expr.c              |  323 +++++-----
+ task03/dummy/src/file2alias.c        |  403 ++++++-------
+ task03/dummy/src/genksyms.c          |  114 ++--
+ task03/dummy/src/keywords.c          |    2 +-
+ task03/dummy/src/mdp.c               |   29 +-
+ task03/dummy/src/mk_elfconfig.c      |    3 +-
+ task03/dummy/src/modpost.c           |  399 ++++++-------
+ task03/dummy/src/sign-file.c         |   96 +--
+ task03/dummy/src/sorttable.c         |  168 +++---
+ task03/dummy/src/sumversion.c        |   73 +--
+ task03/dummy/src/symsearch.c         |   19 +-
+ task03/dummy/src/tracepoint-update.c |   38 +-
+ 43 files changed, 3095 insertions(+), 3014 deletions(-)
+```

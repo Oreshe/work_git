@@ -4,8 +4,7 @@
 #include <string.h>
 #include <elf.h>
 
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	unsigned char ei[EI_NIDENT];
 
