@@ -23500,3 +23500,54 @@ static const struct sectioncheck *section_mismatch(
  ...
  
 ```
+
+### Результат переходу на Chromium-17:
+```
+ task03/Report.md                           |    3 +
+ task03/dummy/.clang-format                 | 1004 ++------
+ task03/dummy/include/ash.h                 |   12 +-
+ task03/dummy/include/assert.h              |   94 +-
+ task03/dummy/include/bpf_elf.h             |   32 +-
+ task03/dummy/include/capi.h                |   63 +-
+ task03/dummy/include/cld.h                 |   68 +-
+ task03/dummy/include/ec.h                  |   20 +-
+ task03/dummy/include/err.h                 |   34 +-
+ task03/dummy/include/export.h              |   14 +-
+ task03/dummy/include/fnmatch.h             |   10 +-
+ task03/dummy/include/ftw.h                 |  148 +-
+ task03/dummy/include/if_hippi.h            |   92 +-
+ task03/dummy/include/ip.h                  |  152 +-
+ task03/dummy/include/kd.h                  |  110 +-
+ task03/dummy/include/keyctl.h              |  144 +-
+ task03/dummy/include/kfd_ioctl.h           | 1306 +++++-----
+ task03/dummy/include/langinfo.h            |  885 ++++---
+ task03/dummy/include/mcheck.h              |   12 +-
+ task03/dummy/include/mqueue.h              |   76 +-
+ task03/dummy/include/netrom.h              |   44 +-
+ task03/dummy/include/rpl_iptunnel.h        |    6 +-
+ task03/dummy/include/sched.h               |   45 +-
+ task03/dummy/include/sudo_plugin.h         |  341 +--
+ task03/dummy/include/tcp_metrics.h         |   76 +-
+ task03/dummy/include/trace_mmap.h          |   36 +-
+ task03/dummy/include/ulimit.h              |   16 +-
+ task03/dummy/include/v4l2-subdev.h         |  146 +-
+ task03/dummy/src/conf.c                    | 1611 ++++++------
+ task03/dummy/src/confdata.c                | 1856 +++++++-------
+ task03/dummy/src/devicetable-offsets.c     |  559 ++--
+ task03/dummy/src/expr.c                    | 1908 +++++++-------
+ task03/dummy/src/file2alias.c              | 2250 ++++++++--------
+ task03/dummy/src/gen_packed_field_checks.c |   61 +-
+ task03/dummy/src/genksyms.c                | 1410 +++++-----
+ task03/dummy/src/keywords.c                |  142 +-
+ task03/dummy/src/mdp.c                     |  324 ++-
+ task03/dummy/src/mk_elfconfig.c            |   45 +-
+ task03/dummy/src/mnconf-common.c           |   61 +-
+ task03/dummy/src/modpost.c                 | 3812 ++++++++++++++--------------
+ task03/dummy/src/polgen.c                  |  224 +-
+ task03/dummy/src/sign-file.c               |  606 +++--
+ task03/dummy/src/sorttable.c               | 1534 ++++++-----
+ task03/dummy/src/sumversion.c              |  612 +++--
+ task03/dummy/src/symsearch.c               |  246 +-
+ task03/dummy/src/tracepoint-update.c       |  436 ++--
+ 46 files changed, 10898 insertions(+), 11788 deletions(-)
+```

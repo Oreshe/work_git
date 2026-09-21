@@ -30,23 +30,23 @@
 
 /* ELF map definition */
 struct bpf_elf_map {
-	__u32 type;
-	__u32 size_key;
-	__u32 size_value;
-	__u32 max_elem;
-	__u32 flags;
-	__u32 id;
-	__u32 pinning;
-	__u32 inner_id;
-	__u32 inner_idx;
+  __u32 type;
+  __u32 size_key;
+  __u32 size_value;
+  __u32 max_elem;
+  __u32 flags;
+  __u32 id;
+  __u32 pinning;
+  __u32 inner_id;
+  __u32 inner_idx;
 };
 
-#define BPF_ANNOTATE_KV_PAIR(name, type_key, type_val) \
-	struct ____btf_map_##name {                    \
-		type_key key;                          \
-		type_val value;                        \
-	};                                             \
-	struct ____btf_map_##name __attribute__((      \
-		section(".maps." #name), used)) ____btf_map_##name = {}
+#define BPF_ANNOTATE_KV_PAIR(name, type_key, type_val)                     \
+  struct ____btf_map_##name {                                              \
+    type_key key;                                                          \
+    type_val value;                                                        \
+  };                                                                       \
+  struct ____btf_map_##name __attribute__((section(".maps." #name), used)) \
+  ____btf_map_##name = {}
 
 #endif /* __BPF_ELF__ */

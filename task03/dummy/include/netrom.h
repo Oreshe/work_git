@@ -38,15 +38,15 @@
 #define NETROM_NODE 1
 
 struct nr_route_struct {
-	int type;
-	ax25_address callsign;
-	char device[16];
-	unsigned int quality;
-	char mnemonic[7];
-	ax25_address neighbour;
-	unsigned int obs_count;
-	unsigned int ndigis;
-	ax25_address digipeaters[AX25_MAX_DIGIS];
+  int type;
+  ax25_address callsign;
+  char device[16];
+  unsigned int quality;
+  char mnemonic[7];
+  ax25_address neighbour;
+  unsigned int obs_count;
+  unsigned int ndigis;
+  ax25_address digipeaters[AX25_MAX_DIGIS];
 };
 
 /* NetRom socket ioctls: */
@@ -58,23 +58,23 @@ struct nr_route_struct {
 
 /* NetRom parameter structure: */
 struct nr_parms_struct {
-	unsigned int quality;
-	unsigned int obs_count;
-	unsigned int ttl;
-	unsigned int timeout;
-	unsigned int ack_delay;
-	unsigned int busy_delay;
-	unsigned int tries;
-	unsigned int window;
-	unsigned int paclen;
+  unsigned int quality;
+  unsigned int obs_count;
+  unsigned int ttl;
+  unsigned int timeout;
+  unsigned int ack_delay;
+  unsigned int busy_delay;
+  unsigned int tries;
+  unsigned int window;
+  unsigned int paclen;
 };
 
 /* NetRom control structure: */
 struct nr_ctl_struct {
-	unsigned char index;
-	unsigned char id;
-	unsigned int cmd;
-	unsigned long arg;
+  unsigned char index;
+  unsigned char id;
+  unsigned int cmd;
+  unsigned long arg;
 };
 
 #endif /* netrom/netrom.h */

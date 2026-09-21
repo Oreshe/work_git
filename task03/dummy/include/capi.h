@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
 /* $Id: capi.h,v 1.4.6.1 2001/09/23 22:25:05 kai Exp $
- * 
+ *
  * CAPI 2.0 Interface for Linux
- * 
+ *
  * Copyright 1997 by Carsten Paeth (calle@calle.in-berlin.de)
- * 
+ *
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -13,18 +13,18 @@
 #ifndef __LINUX_CAPI_H__
 #define __LINUX_CAPI_H__
 
-#include <linux/types.h>
 #include <linux/ioctl.h>
 #include <linux/kernelcapi.h>
+#include <linux/types.h>
 
 /*
  * CAPI_REGISTER
  */
 
 typedef struct capi_register_params { /* CAPI_REGISTER */
-	__u32 level3cnt; /* No. of simulatneous user data connections */
-	__u32 datablkcnt; /* No. of buffered data messages */
-	__u32 datablklen; /* Size of buffered data messages */
+  __u32 level3cnt;  /* No. of simulatneous user data connections */
+  __u32 datablkcnt; /* No. of buffered data messages */
+  __u32 datablklen; /* Size of buffered data messages */
 } capi_register_params;
 
 #define CAPI_REGISTER _IOW('C', 0x01, struct capi_register_params)
@@ -36,18 +36,17 @@ typedef struct capi_register_params { /* CAPI_REGISTER */
 #define CAPI_MANUFACTURER_LEN 64
 
 #define CAPI_GET_MANUFACTURER \
-	_IOWR('C', 0x06,      \
-	      int) /* broken: wanted size 64 (CAPI_MANUFACTURER_LEN) */
+  _IOWR('C', 0x06, int) /* broken: wanted size 64 (CAPI_MANUFACTURER_LEN) */
 
 /*
  * CAPI_GET_VERSION
  */
 
 typedef struct capi_version {
-	__u32 majorversion;
-	__u32 minorversion;
-	__u32 majormanuversion;
-	__u32 minormanuversion;
+  __u32 majorversion;
+  __u32 minorversion;
+  __u32 majormanuversion;
+  __u32 minormanuversion;
 } capi_version;
 
 #define CAPI_GET_VERSION _IOWR('C', 0x07, struct capi_version)
@@ -58,28 +57,28 @@ typedef struct capi_version {
 
 #define CAPI_SERIAL_LEN 8
 #define CAPI_GET_SERIAL \
-	_IOWR('C', 0x08, int) /* broken: wanted size 8 (CAPI_SERIAL_LEN) */
+  _IOWR('C', 0x08, int) /* broken: wanted size 8 (CAPI_SERIAL_LEN) */
 
 /*
  * CAPI_GET_PROFILE
  */
 
 typedef struct capi_profile {
-	__u16 ncontroller; /* number of installed controller */
-	__u16 nbchannel; /* number of B-Channels */
-	__u32 goptions; /* global options */
-	__u32 support1; /* B1 protocols support */
-	__u32 support2; /* B2 protocols support */
-	__u32 support3; /* B3 protocols support */
-	__u32 reserved[6]; /* reserved */
-	__u32 manu[5]; /* manufacturer specific information */
+  __u16 ncontroller; /* number of installed controller */
+  __u16 nbchannel;   /* number of B-Channels */
+  __u32 goptions;    /* global options */
+  __u32 support1;    /* B1 protocols support */
+  __u32 support2;    /* B2 protocols support */
+  __u32 support3;    /* B3 protocols support */
+  __u32 reserved[6]; /* reserved */
+  __u32 manu[5];     /* manufacturer specific information */
 } capi_profile;
 
 #define CAPI_GET_PROFILE _IOWR('C', 0x09, struct capi_profile)
 
 typedef struct capi_manufacturer_cmd {
-	unsigned long cmd;
-	void *data;
+  unsigned long cmd;
+  void* data;
 } capi_manufacturer_cmd;
 
 /*
@@ -107,14 +106,14 @@ typedef struct capi_manufacturer_cmd {
  * and CAPI_GET_PROFILE
  */
 typedef union capi_ioctl_struct {
-	__u32 contr;
-	capi_register_params rparams;
-	__u8 manufacturer[CAPI_MANUFACTURER_LEN];
-	capi_version version;
-	__u8 serial[CAPI_SERIAL_LEN];
-	capi_profile profile;
-	capi_manufacturer_cmd cmd;
-	__u16 errcode;
+  __u32 contr;
+  capi_register_params rparams;
+  __u8 manufacturer[CAPI_MANUFACTURER_LEN];
+  capi_version version;
+  __u8 serial[CAPI_SERIAL_LEN];
+  capi_profile profile;
+  capi_manufacturer_cmd cmd;
+  __u16 errcode;
 } capi_ioctl_struct;
 
 /*

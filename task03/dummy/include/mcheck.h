@@ -25,11 +25,11 @@ __BEGIN_DECLS
 /* Return values for `mprobe': these are the kinds of inconsistencies that
    `mcheck' enables detection of.  */
 enum mcheck_status {
-	MCHECK_DISABLED = -1, /* Consistency checking is not turned on.  */
-	MCHECK_OK, /* Block is fine.  */
-	MCHECK_FREE, /* Block freed twice.  */
-	MCHECK_HEAD, /* Memory before the block was clobbered.  */
-	MCHECK_TAIL /* Memory after the block was clobbered.  */
+  MCHECK_DISABLED = -1, /* Consistency checking is not turned on.  */
+  MCHECK_OK,            /* Block is fine.  */
+  MCHECK_FREE,          /* Block freed twice.  */
+  MCHECK_HEAD,          /* Memory before the block was clobbered.  */
+  MCHECK_TAIL           /* Memory after the block was clobbered.  */
 };
 
 /* Activate a standard collection of debugging hooks.  This must be called
@@ -48,7 +48,7 @@ extern void mcheck_check_all(void);
 /* Check for aberrations in a particular malloc'd block.  You must have
    called `mcheck' already.  These are the same checks that `mcheck' does
    when you free or reallocate a block.  */
-extern enum mcheck_status mprobe(void *__ptr) __THROW;
+extern enum mcheck_status mprobe(void* __ptr) __THROW;
 
 /* Activate a standard collection of tracing hooks.  */
 extern void mtrace(void) __THROW;

@@ -19,15 +19,15 @@
 #ifndef _NETASH_ASH_H
 #define _NETASH_ASH_H 1
 
-#include <features.h>
 #include <bits/sockaddr.h>
+#include <features.h>
 
 struct __attribute_struct_may_alias__ sockaddr_ash {
-	__SOCKADDR_COMMON(sash_); /* Common data: address family etc.  */
-	int sash_ifindex; /* Interface to use.  */
-	unsigned char sash_channel; /* Realtime or control.  */
-	unsigned int sash_plen;
-	unsigned char sash_prefix[16];
+  __SOCKADDR_COMMON(sash_);   /* Common data: address family etc.  */
+  int sash_ifindex;           /* Interface to use.  */
+  unsigned char sash_channel; /* Realtime or control.  */
+  unsigned int sash_plen;
+  unsigned char sash_prefix[16];
 };
 
 /* Values for `channel' member.  */

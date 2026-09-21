@@ -54,10 +54,10 @@
    and on support for _Bool (added in C99 and GCC 3.0) in order to
    validate that only a single expression is passed as an argument,
    and is currently implemented only for C.  */
-#if (__GLIBC_USE(ISOC23) &&                                               \
-     (defined __GNUC__ ?                                                  \
-	      __GNUC_PREREQ(3, 0) :                                       \
-	      defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) && \
+#if (__GLIBC_USE(ISOC23) &&                                             \
+     (defined __GNUC__                                                  \
+          ? __GNUC_PREREQ(3, 0)                                         \
+          : defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) && \
      !defined __cplusplus)
 #define __ASSERT_VARIADIC 1
 #else
@@ -94,20 +94,24 @@
 __BEGIN_DECLS
 
 /* This prints an "Assertion failed" message and aborts.  */
-extern void __assert_fail(const char *__assertion, const char *__file,
-			  unsigned int __line, const char *__function) __THROW
-	__attribute__((__noreturn__)) __COLD;
+extern void __assert_fail(const char* __assertion,
+                          const char* __file,
+                          unsigned int __line,
+                          const char* __function) __THROW
+    __attribute__((__noreturn__)) __COLD;
 
 /* Likewise, but prints the error text for ERRNUM.  */
-extern void __assert_perror_fail(int __errnum, const char *__file,
-				 unsigned int __line,
-				 const char *__function) __THROW
-	__attribute__((__noreturn__)) __COLD;
+extern void __assert_perror_fail(int __errnum,
+                                 const char* __file,
+                                 unsigned int __line,
+                                 const char* __function) __THROW
+    __attribute__((__noreturn__)) __COLD;
 
 /* The following is not at all used here but needed for standard
    compliance.  */
-extern void __assert(const char *__assertion, const char *__file,
-		     int __line) __THROW __attribute__((__noreturn__)) __COLD;
+extern void __assert(const char* __assertion,
+                     const char* __file,
+                     int __line) __THROW __attribute__((__noreturn__)) __COLD;
 
 #if __ASSERT_VARIADIC
 /* This function is not defined and is not called outside of an
@@ -133,55 +137,51 @@ __END_DECLS
 #define __ASSERT_FILE __FILE__
 #define __ASSERT_LINE __LINE__
 #endif
-#define assert(expr)                                                \
-	(static_cast<bool>(expr) ?                                  \
-		 void(0) :                                          \
-		 __assert_fail(#expr, __ASSERT_FILE, __ASSERT_LINE, \
-			       __ASSERT_FUNCTION))
+#define assert(expr)                                             \
+  (static_cast<bool>(expr) ? void(0)                             \
+                           : __assert_fail(#expr, __ASSERT_FILE, \
+                                           __ASSERT_LINE, __ASSERT_FUNCTION))
 #elif !defined __GNUC__ || defined __STRICT_ANSI__
 #if __ASSERT_VARIADIC
-#define assert(...)                                                      \
-	(((void)sizeof(__assert_single_arg(__VA_ARGS__)), __VA_ARGS__) ? \
-		 __ASSERT_VOID_CAST(0) :                                 \
-		 __assert_fail(#__VA_ARGS__, __FILE__, __LINE__,         \
-			       __ASSERT_FUNCTION))
+#define assert(...)                                              \
+  (((void)sizeof(__assert_single_arg(__VA_ARGS__)), __VA_ARGS__) \
+       ? __ASSERT_VOID_CAST(0)                                   \
+       : __assert_fail(#__VA_ARGS__, __FILE__, __LINE__, __ASSERT_FUNCTION))
 #else
-#define assert(expr)                      \
-	((expr) ? __ASSERT_VOID_CAST(0) : \
-		  __assert_fail(#expr, __FILE__, __LINE__, __ASSERT_FUNCTION))
+#define assert(expr)              \
+  ((expr) ? __ASSERT_VOID_CAST(0) \
+          : __assert_fail(#expr, __FILE__, __LINE__, __ASSERT_FUNCTION))
 #endif
 #else
 #if __ASSERT_VARIADIC
-#define assert(...)                                                      \
-	((void)sizeof(__assert_single_arg(__VA_ARGS__)), __extension__({ \
-		 if (__VA_ARGS__)                                        \
-			 ; /* empty */                                   \
-		 else                                                    \
-			 __assert_fail(#__VA_ARGS__, __FILE__, __LINE__, \
-				       __ASSERT_FUNCTION);               \
-	 }))
+#define assert(...)                                                        \
+  ((void)sizeof(__assert_single_arg(__VA_ARGS__)), __extension__({         \
+     if (__VA_ARGS__)                                                      \
+       ; /* empty */                                                       \
+     else                                                                  \
+       __assert_fail(#__VA_ARGS__, __FILE__, __LINE__, __ASSERT_FUNCTION); \
+   }))
 #else
 /* The first occurrence of EXPR is not evaluated due to the sizeof,
    but will trigger any pedantic warnings masked by the __extension__
    for the second occurrence.  The ternary operator is required to
    support function pointers and bit fields in this context, and to
    suppress the evaluation of variable length arrays.  */
-#define assert(expr)                                              \
-	((void)sizeof((expr) ? 1 : 0), __extension__({            \
-		 if (expr)                                        \
-			 ; /* empty */                            \
-		 else                                             \
-			 __assert_fail(#expr, __FILE__, __LINE__, \
-				       __ASSERT_FUNCTION);        \
-	 }))
+#define assert(expr)                                                \
+  ((void)sizeof((expr) ? 1 : 0), __extension__({                    \
+     if (expr)                                                      \
+       ; /* empty */                                                \
+     else                                                           \
+       __assert_fail(#expr, __FILE__, __LINE__, __ASSERT_FUNCTION); \
+   }))
 #endif
 #endif
 
 #ifdef __USE_GNU
-#define assert_perror(errnum)                                           \
-	(!(errnum) ? __ASSERT_VOID_CAST(0) :                            \
-		     __assert_perror_fail((errnum), __FILE__, __LINE__, \
-					  __ASSERT_FUNCTION))
+#define assert_perror(errnum)                                     \
+  (!(errnum) ? __ASSERT_VOID_CAST(0)                              \
+             : __assert_perror_fail((errnum), __FILE__, __LINE__, \
+                                    __ASSERT_FUNCTION))
 #endif
 
 /* Version 2.4 and later of GCC define a magical variable `__PRETTY_FUNCTION__'
@@ -195,7 +195,7 @@ __END_DECLS
 #if defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L
 #define __ASSERT_FUNCTION __func__
 #else
-#define __ASSERT_FUNCTION ((const char *)0)
+#define __ASSERT_FUNCTION ((const char*)0)
 #endif
 #endif
 

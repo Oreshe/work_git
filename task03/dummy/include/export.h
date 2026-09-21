@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
 /*
  * include/linux/nfsd/export.h
- * 
+ *
  * Public declarations for NFS exports. The definitions for the
  * syscall interface are in nfsctl.h
  *
@@ -38,9 +38,9 @@
 #define NFSEXP_NOHIDE 0x0200
 #define NFSEXP_NOSUBTREECHECK 0x0400
 #define NFSEXP_NOAUTHNLM \
-	0x0800 /* Don't authenticate NLM requests - just trust */
+  0x0800 /* Don't authenticate NLM requests - just trust */
 #define NFSEXP_MSNFS \
-	0x1000 /* do silly things that MS clients expect; no longer supported */
+  0x1000 /* do silly things that MS clients expect; no longer supported */
 #define NFSEXP_FSID 0x2000
 #define NFSEXP_CROSSMOUNT 0x4000
 #define NFSEXP_NOACL 0x8000 /* reserved for possible ACL related use */
@@ -60,9 +60,9 @@
 #define NFSEXP_ALLFLAGS 0x3FEFF
 
 /* The flags that may vary depending on security flavor: */
-#define NFSEXP_SECINFO_FLAGS                                      \
-	(NFSEXP_READONLY | NFSEXP_ROOTSQUASH | NFSEXP_ALLSQUASH | \
-	 NFSEXP_INSECURE_PORT)
+#define NFSEXP_SECINFO_FLAGS                                \
+  (NFSEXP_READONLY | NFSEXP_ROOTSQUASH | NFSEXP_ALLSQUASH | \
+   NFSEXP_INSECURE_PORT)
 
 /*
  * Transport layer security policies that are permitted to access
@@ -75,6 +75,6 @@
 #define NFSEXP_XPRTSEC_NUM (3)
 
 #define NFSEXP_XPRTSEC_ALL \
-	(NFSEXP_XPRTSEC_NONE | NFSEXP_XPRTSEC_TLS | NFSEXP_XPRTSEC_MTLS)
+  (NFSEXP_XPRTSEC_NONE | NFSEXP_XPRTSEC_TLS | NFSEXP_XPRTSEC_MTLS)
 
 #endif /* NFSD_EXPORT_H */
